@@ -16,12 +16,23 @@
   <button id="btn-tbk">Pagar con Transbank</button>
 
   <script>
-    // Cambia esta URL al dominio real de tu backend desplegado
     const BACKEND_URL = "https://central-api-backend.onrender.com";
 
     const params = new URLSearchParams(window.location.search);
-    const producto = params.get("producto") || "Producto genérico";
-    const precio = parseInt(params.get("precio")) || 0;
+    const dataParam = params.get("data");
+
+    let producto = "Producto genérico";
+    let precio = 0;
+
+    if (dataParam) {
+      try {
+        const data = JSON.parse(dataParam);
+        producto = data.title || producto;
+        precio = data.price || precio;
+      } catch (e) {
+        console.error("Error parseando data:", e);
+      }
+    }
 
     document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
