@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elegir método de pago</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; text-align: center; }
+    button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Seleccione método de pago</h1>
+  <p id="detalle">Cargando...</p>
+  <button id="btn-mp">Pagar con Mercado Pago</button>
+  <button id="btn-tbk">Pagar con Transbank</button>
+
+  <script>
+    // Cambia esta URL al dominio real de tu backend desplegado
+    const BACKEND_URL = "https://central-api-backend.onrender.com";
+
+    const params = new URLSearchParams(window.location.search);
+    const producto = params.get("producto") || "Producto genérico";
+    const precio = parseInt(params.get("precio")) || 0;
+
+    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
+
+    document.getElementById("btn-mp").onclick = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: producto,
+            quantity: 1,
+            price: precio,
+            description: "Compra desde landing",
+            external_reference: "qr_" + Date.now(),
+          }),
+        });
+        const data = await res.json();
+        if (data.init_point) {
+          window.location.href = data.init_point;
+        } else {
+          alert("No se pudo generar el link de Mercado Pago");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error al conectar con el backend");
+      }
+    };
+
+    document.getElementById("btn-tbk").onclick = () => {
+      window.location.href = `${BACKEND_URL}/api/transbank/init?producto=${encodeURIComponent(producto)}&precio=${precio}`;
+    };
+  </script>
+</body>
+</html>
