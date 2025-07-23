@@ -16,19 +16,21 @@
   <button id="btn-tbk">Pagar con Transbank</button>
 
   <script>
-    const BACKEND_URL = "https://central-api-backend.onrender.com";
+    const BACKEND_MP = "https://central-api-backend.onrender.com"; // backend de Mercado Pago
+    const BACKEND_TBK = "https://integracion-transbank.onrender.com"; // backend de Transbank CORRECTO
 
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
 
     let producto = "Producto genérico";
     let precio = 0;
+    let rawData = null;
 
     if (dataParam) {
       try {
-        const data = JSON.parse(dataParam);
-        producto = data.title || producto;
-        precio = data.price || precio;
+        rawData = JSON.parse(dataParam);
+        producto = rawData.title || producto;
+        precio = rawData.price || precio;
       } catch (e) {
         console.error("Error parseando data:", e);
       }
@@ -38,7 +40,7 @@
 
     document.getElementById("btn-mp").onclick = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
+        const res = await fetch(`${BACKEND_MP}/api/create-mp-link`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -62,7 +64,14 @@
     };
 
     document.getElementById("btn-tbk").onclick = () => {
-      window.location.href = `${BACKEND_URL}/api/transbank/init?producto=${encodeURIComponent(producto)}&precio=${precio}`;
+      const encoded = encodeURIComponent(JSON.stringify({
+        title: producto,
+        quantity: 1,
+        price: precio,
+        description: "Compra desde landing",
+        external_reference: "qr_" + Date.now()
+      }));
+      window.location.href = `${BACKEND_TBK}/pago?data=${encoded}`;
     };
   </script>
 </body>
