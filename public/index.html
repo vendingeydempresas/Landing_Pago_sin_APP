@@ -5,217 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Elegir método de pago</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #FF6A00, #FF7E5F, #D53A1B); /* Fondo de gradientes vibrantes */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      animation: fadeIn 1.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.2); /* Fondo transparente */
-      text-align: center;
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(10px);
-      border: 2px solid #FF7E5F; /* Borde sutil */
-      animation: slideIn 0.7s ease-out;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    h1 {
-      font-size: 36px;
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      animation: bounceIn 0.8s ease-out;
-    }
-
-    @keyframes bounceIn {
-      from {
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    p {
-      font-size: 18px;
-      color: #fff;
-      margin-bottom: 30px;
-      font-weight: 300;
-      opacity: 0.9;
-      animation: fadeInText 1.2s ease-out;
-    }
-
-    @keyframes fadeInText {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    .pay-button {
-      width: 280px;
-      height: 80px;
-      margin: 15px;
-      background-color: #ffffff; /* Fondo blanco para los botones */
-      border: none;
-      cursor: pointer;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      display: flex;  /* Cambio a flex para centrar el contenido */
-      justify-content: center; /* Centrar la imagen horizontalmente */
-      align-items: center; /* Centrar la imagen verticalmente */
-    }
-
-    .pay-button:hover {
-      transform: scale(1.05) translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .pay-button img {
-      width: 50%; /* Reducir el tamaño de la imagen al 50% */
-      height: auto; /* Mantener la proporción original */
-      object-fit: contain; /* Asegura que la imagen no se distorsione */
-    }
-
-    .pay-button-tbk {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .pay-button-mp {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .pay-button-mp, .pay-button-tbk {
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .status-text {
-      font-size: 20px;
-      color: #fff;
-      margin-top: 20px;
-      opacity: 0.9;
-      animation: fadeInText 1s ease-out;
-    }
-
-    form {
-      display: none;
-    }
-
-    /* Responsividad para pantallas pequeñas */
-    @media (max-width: 600px) {
-      .pay-button {
-        width: 220px;
-        height: 60px;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-
-      p {
-        font-size: 16px;
-      }
-    }
+    body { font-family: Arial, sans-serif; padding: 2rem; text-align: center; }
+    button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h1>Escoge tu método de pago</h1>
-    <p>¡Compra rápida y segura sin necesidad de la app!</p>
-    
-    <!-- Botones de pago con imágenes dentro -->
-    <button class="pay-button pay-button-mp" id="btn-mp">
-      <img src="mercado-pago-button.png" alt="Mercado Pago">
-    </button>
-    <button class="pay-button pay-button-tbk" id="btn-tbk">
-      <img src="transbank-button.png" alt="Transbank">
-    </button>
-
-    <p class="status-text" id="statusText">Listo para escanear tu regalo 🎁</p>
-  </div>
-
-  <!-- Formularios de Transbank y Mercado Pago -->
-  <form id="mp-form" action="" method="POST">
-    <input type="hidden" name="token_ws" id="mp-token">
-  </form>
-
-  <form id="tbk-form" action="" method="POST">
-    <input type="hidden" name="token_ws" id="tbk-token">
-  </form>
+  <h1>Seleccione método de pago</h1>
+  <p id="detalle">Cargando...</p>
+  <button id="btn-mp">Pagar con Mercado Pago</button>
+  <button id="btn-tbk">Pagar con Transbank</button>
 
   <script>
-    const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
+    // Define la URL de tu backend para Mercado Pago
+    const BACKEND_URL_MP = "https://central-api-backend.onrender.com"; 
+    // Define la URL de tu backend para Transbank
     const BACKEND_URL_TBK = "https://integracion-transbank.onrender.com";
 
     // Obtener el parámetro 'data' de la URL
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
 
+    // Variables predeterminadas
     let producto = "Producto genérico";
     let precio = 0;
 
+    // Si el parámetro 'data' existe, lo parseamos y extraemos la información
     if (dataParam) {
       try {
+        // Decodificar el parámetro URL y luego parsearlo a JSON
         const data = JSON.parse(decodeURIComponent(dataParam));
         producto = data.title || producto;
         precio = data.price || precio;
@@ -223,6 +40,9 @@
         console.error("Error parseando data:", e);
       }
     }
+
+    // Mostrar los detalles del producto
+    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
     // Acción para el botón de Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
@@ -252,32 +72,9 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      try {
-        // Solicitar el token de Transbank y crear la transacción
-        const res = await fetch(`${BACKEND_URL_TBK}/create-transaction`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: producto,
-            quantity: 1,
-            price: precio,
-            description: "Compra desde landing",
-            external_reference: "qr_" + Date.now(),
-          }),
-        });
-
-        const data = await res.json();
-        if (data.token) {
-          document.getElementById("statusText").innerHTML = `Transacción autorizada. Token: ${data.token}`;
-        } else {
-          document.getElementById("statusText").innerHTML = "Autorización fallida.";
-        }
-      } catch (err) {
-        console.error(err);
-        document.getElementById("statusText").innerHTML = "Error al procesar la transacción.";
-      }
+      // Redirigir al backend de Transbank pasando el parámetro 'data' para crear la orden
+      window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
   </script>
-
 </body>
 </html>
