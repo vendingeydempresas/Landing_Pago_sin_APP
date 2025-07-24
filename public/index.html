@@ -5,15 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Elegir método de pago</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; text-align: center; }
-    button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; }
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #FF6A00, #FF7E5F, #D53A1B); /* Fondo de gradientes vibrantes */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.2); /* Fondo transparente */
+      text-align: center;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid #FF7E5F; /* Borde sutil */
+      animation: slideIn 0.7s ease-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 30px;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .pay-button {
+      width: 280px;
+      height: 80px;
+      margin: 15px;
+      background-color: #ffffff; /* Fondo blanco para los botones */
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      display: flex;  /* Cambio a flex para centrar el contenido */
+      justify-content: center; /* Centrar la imagen horizontalmente */
+      align-items: center; /* Centrar la imagen verticalmente */
+    }
+
+    .pay-button:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .pay-button img {
+      width: 50%; /* Reducir el tamaño de la imagen al 50% */
+      height: auto; /* Mantener la proporción original */
+      object-fit: contain; /* Asegura que la imagen no se distorsione */
+    }
+
+    .status-text {
+      font-size: 20px;
+      color: #fff;
+      margin-top: 20px;
+      opacity: 0.9;
+    }
+
+    form {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h1>Seleccione método de pago</h1>
-  <p id="detalle">Cargando...</p>
-  <button id="btn-mp">Pagar con Mercado Pago</button>
-  <button id="btn-tbk">Pagar con Transbank</button>
+
+  <div class="container">
+    <h1>Escoge tu método de pago</h1>
+    <p id="detalle">Cargando...</p>
+    <button class="pay-button" id="btn-mp">
+      <img src="mercado-pago-button.png" alt="Mercado Pago">
+    </button>
+    <button class="pay-button" id="btn-tbk">
+      <img src="transbank-button.png" alt="Transbank">
+    </button>
+
+
+  </div>
 
   <script>
     // Define la URL de tu backend para Mercado Pago
@@ -76,5 +186,6 @@
       window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
   </script>
+
 </body>
 </html>
