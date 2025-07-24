@@ -191,7 +191,7 @@
       <img src="transbank-button.png" alt="Transbank">
     </button>
 
-
+    <p class="status-text" id="statusText">Listo para escanear tu regalo 🎁</p>
   </div>
 
   <!-- Formularios de Transbank y Mercado Pago -->
@@ -227,7 +227,7 @@
     // Acción para el botón de Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
       try {
-        const res = await fetch(${BACKEND_URL_MP}/api/create-mp-link, {
+        const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -252,7 +252,7 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      const res = await fetch(${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)});
+      const res = await fetch(`${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`);
       const data = await res.text();  // Obtener el contenido HTML de la respuesta
 
       if (data) {
