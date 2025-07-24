@@ -1,58 +1,75 @@
-<script>
-  const BACKEND_URL = "https://central-api-backend.onrender.com";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elegir método de pago</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; text-align: center; }
+    button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Seleccione método de pago</h1>
+  <p id="detalle">Cargando...</p>
+  <button id="btn-mp">Pagar con Mercado Pago</button>
+  <button id="btn-tbk">Pagar con Transbank</button>
 
-  const params = new URLSearchParams(window.location.search);
-  const dataParam = params.get("data");
+  <script>
+    // Obtener el parámetro 'data' de la URL
+    const params = new URLSearchParams(window.location.search);
+    const dataParam = params.get("data");
 
-  let producto = "Producto genérico";
-  let precio = 0;
+    // Variables predeterminadas
+    let producto = "Producto genérico";
+    let precio = 0;
 
-  if (dataParam) {
-    try {
-      const data = JSON.parse(dataParam);
-      producto = data.title || producto;
-      precio = data.price || precio;
-    } catch (e) {
-      console.error("Error parseando data:", e);
-    }
-  }
-
-  document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
-
-  document.getElementById("btn-mp").onclick = async () => {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: producto,
-          quantity: 1,
-          price: precio,
-          description: "Compra desde landing",
-          external_reference: "qr_" + Date.now(),
-        }),
-      });
-      const data = await res.json();
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      } else {
-        alert("No se pudo generar el link de Mercado Pago");
+    // Si el parámetro 'data' existe, lo parseamos y extraemos la información
+    if (dataParam) {
+      try {
+        // Decodificar el parámetro URL y luego parsearlo a JSON
+        const data = JSON.parse(decodeURIComponent(dataParam));
+        producto = data.title || producto;
+        precio = data.price || precio;
+      } catch (e) {
+        console.error("Error parseando data:", e);
       }
-    } catch (err) {
-      console.error(err);
-      alert("Error al conectar con el backend");
     }
-  };
 
-  // Modificación aquí para el botón de Transbank
-  document.getElementById("btn-tbk").onclick = async () => {
-    const res = await fetch(`${BACKEND_URL}/pago?data=${encodeURIComponent(dataParam)}`);
-    const data = await res.text();
-    if (data) {
-      // Aquí rediriges o muestras la página generada con el token
-      document.write(data);
-    } else {
-      alert("Error al crear la transacción de Transbank.");
-    }
-  };
-</script>
+    // Mostrar los detalles del producto
+    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
+
+    // Acción para el botón de Mercado Pago
+    document.getElementById("btn-mp").onclick = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: producto,
+            quantity: 1,
+            price: precio,
+            description: "Compra desde landing",
+            external_reference: "qr_" + Date.now(),
+          }),
+        });
+        const data = await res.json();
+        if (data.init_point) {
+          window.location.href = data.init_point;
+        } else {
+          alert("No se pudo generar el link de Mercado Pago");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error al conectar con el backend");
+      }
+    };
+
+    // Acción para el botón de Transbank
+    document.getElementById("btn-tbk").onclick = async () => {
+      // Redirigir al backend de Transbank pasando el parámetro 'data' para crear la orden
+      window.location.href = `${BACKEND_URL}/pago?data=${encodeURIComponent(dataParam)}`;
+    };
+  </script>
+</body>
+</html>
