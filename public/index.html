@@ -252,13 +252,29 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      const res = await fetch(`${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`);
-      const data = await res.text();  // Obtener el contenido HTML de la respuesta
+      try {
+        // Solicitar el token de Transbank y crear la transacción
+        const res = await fetch(`${BACKEND_URL_TBK}/create-transaction`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: producto,
+            quantity: 1,
+            price: precio,
+            description: "Compra desde landing",
+            external_reference: "qr_" + Date.now(),
+          }),
+        });
 
-      if (data) {
-        document.write(data);  // Escribir el contenido de la respuesta en el documento
-      } else {
-        alert("Error al crear la transacción de Transbank.");
+        const data = await res.json();
+        if (data.token) {
+          document.getElementById("statusText").innerHTML = `Transacción autorizada. Token: ${data.token}`;
+        } else {
+          document.getElementById("statusText").innerHTML = "Autorización fallida.";
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById("statusText").innerHTML = "Error al procesar la transacción.";
       }
     };
   </script>
