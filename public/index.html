@@ -16,8 +16,10 @@
   <button id="btn-tbk">Pagar con Transbank</button>
 
   <script>
-    // Define la URL de tu backend
-    const BACKEND_URL = "https://central-api-backend.onrender.com"; // Asegúrate de que esta URL sea la correcta
+    // Define la URL de tu backend para Mercado Pago
+    const BACKEND_URL_MP = "https://central-api-backend.onrender.com"; 
+    // Define la URL de tu backend para Transbank
+    const BACKEND_URL_TBK = "https://integracion-transbank.onrender.com";
 
     // Obtener el parámetro 'data' de la URL
     const params = new URLSearchParams(window.location.search);
@@ -45,7 +47,7 @@
     // Acción para el botón de Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
+        const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -71,7 +73,7 @@
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
       // Redirigir al backend de Transbank pasando el parámetro 'data' para crear la orden
-      window.location.href = `${BACKEND_URL}/pago?data=${encodeURIComponent(dataParam)}`;
+      window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
   </script>
 </body>
