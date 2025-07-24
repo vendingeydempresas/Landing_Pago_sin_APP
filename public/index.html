@@ -5,34 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Elegir método de pago</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; text-align: center; }
-    button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #FF7E5F, #D53A1B); /* Fondo degradado como en tu app */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: transparent;
+      text-align: center;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #FFFFFF;
+      margin-bottom: 24px;
+    }
+
+    .button {
+      width: 160px;
+      height: 160px;
+      margin-bottom: 16px;
+      background: url('your-button-image.png') no-repeat center center; /* Cambia la imagen aquí */
+      background-size: cover;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .status-text {
+      font-size: 14px;
+      color: white;
+      margin-top: 16px;
+    }
+    
+    /* Botones de pago */
+    .pay-button {
+      background: url('mercado-pago-button.png') no-repeat center center; /* Imagen de Mercado Pago */
+      background-size: cover;
+      border: none;
+      width: 240px;
+      height: 60px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .pay-button-tbk {
+      background: url('transbank-button.png') no-repeat center center; /* Imagen de Transbank */
+      background-size: cover;
+      border: none;
+      width: 240px;
+      height: 60px;
+      cursor: pointer;
+    }
+
+    /* Ajustes para el formulario invisible */
+    form {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h1>Seleccione método de pago</h1>
-  <p id="detalle">Cargando...</p>
-  <button id="btn-mp">Pagar con Mercado Pago</button>
-  <button id="btn-tbk">Pagar con Transbank</button>
+
+  <div class="container">
+    <h1>Regalitos</h1>
+    <p>Escanea y paga en segundos</p>
+    
+    <!-- Botones de pago -->
+    <button class="pay-button" id="btn-mp">Pagar con Mercado Pago</button>
+    <button class="pay-button-tbk" id="btn-tbk">Pagar con Transbank</button>
+
+    <p class="status-text" id="statusText">Listo para escanear tu regalo 🎁</p>
+  </div>
+
+  <!-- Formularios de Transbank y Mercado Pago -->
+  <form id="mp-form" action="" method="POST">
+    <input type="hidden" name="token_ws" id="mp-token">
+  </form>
+
+  <form id="tbk-form" action="" method="POST">
+    <input type="hidden" name="token_ws" id="tbk-token">
+  </form>
 
   <script>
-    // Define la URL de tu backend para Mercado Pago
-    const BACKEND_URL_MP = "https://central-api-backend.onrender.com"; 
-    // Define la URL de tu backend para Transbank
+    const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
     const BACKEND_URL_TBK = "https://integracion-transbank.onrender.com";
 
     // Obtener el parámetro 'data' de la URL
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
 
-    // Variables predeterminadas
     let producto = "Producto genérico";
     let precio = 0;
 
-    // Si el parámetro 'data' existe, lo parseamos y extraemos la información
     if (dataParam) {
       try {
-        // Decodificar el parámetro URL y luego parsearlo a JSON
         const data = JSON.parse(decodeURIComponent(dataParam));
         producto = data.title || producto;
         precio = data.price || precio;
@@ -40,9 +123,6 @@
         console.error("Error parseando data:", e);
       }
     }
-
-    // Mostrar los detalles del producto
-    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
     // Acción para el botón de Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
@@ -72,9 +152,16 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      // Redirigir al backend de Transbank pasando el parámetro 'data' para crear la orden
-      window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
+      const res = await fetch(`${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`);
+      const data = await res.text();  // Obtener el contenido HTML de la respuesta
+
+      if (data) {
+        document.write(data);  // Escribir el contenido de la respuesta en el documento
+      } else {
+        alert("Error al crear la transacción de Transbank.");
+      }
     };
   </script>
+
 </body>
 </html>
