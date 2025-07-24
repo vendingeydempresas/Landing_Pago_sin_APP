@@ -16,6 +16,9 @@
   <button id="btn-tbk">Pagar con Transbank</button>
 
   <script>
+    // Define la URL de tu backend
+    const BACKEND_URL = "https://central-api-backend.onrender.com"; // Asegúrate de que esta URL sea la correcta
+
     // Obtener el parámetro 'data' de la URL
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
