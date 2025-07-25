@@ -181,8 +181,30 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      // **Modificado**: Redirigir al backend de Transbank
-      window.location.href = `${BACKEND_URL_TBK}/transbank/retorno?data=${encodeURIComponent(dataParam)}`;
+      try {
+        // **Modificado**: Enviar la información de la transacción a través de un POST
+        const res = await fetch(`${BACKEND_URL_TBK}/transbank/retorno`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: JSON.parse(decodeURIComponent(dataParam)) // Enviar el parámetro como JSON
+          }),
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          // Redirigir al usuario según la respuesta del backend
+          window.location.href = result.redirect_url || '/transbank/retorno'; // Si el backend devuelve la URL de redirección
+        } else {
+          alert("Hubo un error en el procesamiento del pago");
+        }
+      } catch (error) {
+        console.error("Error al conectar con el backend de Transbank:", error);
+        alert("No se pudo procesar el pago");
+      }
     };
   </script>
 
