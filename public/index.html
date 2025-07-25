@@ -123,82 +123,72 @@
     </button>
   </div>
 
-  <script>
-    // Define la URL de tu backend para Mercado Pago y Transbank
-    const BACKEND_URL = "https://central-api-backend.onrender.com"; // Nuevo Backend
+ <script>
+  // Define la URL de tu backend para Transbank
+  const BACKEND_URL = "https://central-api-backend.onrender.com"; // Backend de Transbank
 
-    // Obtener el parámetro 'data' de la URL
-    const params = new URLSearchParams(window.location.search);
-    const dataParam = params.get("data");
+  // Obtener el parámetro 'data' de la URL
+  const params = new URLSearchParams(window.location.search);
+  const dataParam = params.get("data");
 
-    // Variables predeterminadas
-    let producto = "Producto genérico";
-    let precio = 0;
+  // Variables predeterminadas
+  let producto = "Producto genérico";
+  let precio = 0;
 
-    // Si el parámetro 'data' existe, lo parseamos y extraemos la información
-    if (dataParam) {
-      try {
-        // Decodificar el parámetro URL y luego parsearlo a JSON
-        const data = JSON.parse(decodeURIComponent(dataParam));
-        producto = data.title || producto;
-        precio = data.price || precio;
-      } catch (e) {
-        console.error("Error parseando data:", e);
-      }
+  // Si el parámetro 'data' existe, lo parseamos y extraemos la información
+  if (dataParam) {
+    try {
+      const data = JSON.parse(decodeURIComponent(dataParam));
+      producto = data.title || producto;
+      precio = data.price || precio;
+    } catch (e) {
+      console.error("Error parseando data:", e);
     }
+  }
 
-    // Mostrar los detalles del producto
-    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
+  // Mostrar los detalles del producto
+  document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
-    // Acción para el botón de Mercado Pago
-    document.getElementById("btn-mp").onclick = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/create-mp-link`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+  // Acción para el botón de Transbank
+  document.getElementById("btn-tbk").onclick = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/transbank/pago`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: JSON.stringify({
             title: producto,
-            quantity: 1,
             price: precio,
-            description: "Compra desde landing",
-            external_reference: "qr_" + Date.now(),
           }),
-        });
-        const data = await res.json();
-        if (data.init_point) {
-          window.location.href = data.init_point;
-        } else {
-          alert("No se pudo generar el link de Mercado Pago");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Error al conectar con el backend");
-      }
-    };
+        }),
+      });
 
-    // Acción para el botón de Transbank
-    document.getElementById("btn-tbk").onclick = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/transbank/pago`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            data: JSON.stringify({
-              title: producto,
-              price: precio,
-            }),
-          }),
-        });
+      // Esperar la respuesta del backend
+      const { url, token } = await res.json();
+      if (url && token) {
+        // Redirigir a la URL de Transbank con el token
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
 
-        // Esperar la respuesta del backend que contiene el formulario HTML
-        const html = await res.text();
-        document.body.innerHTML = html;
-      } catch (err) {
-        console.error(err);
-        alert("Error al conectar con el backend de Transbank");
+        const inputToken = document.createElement('input');
+        inputToken.type = 'hidden';
+        inputToken.name = 'token_ws';
+        inputToken.value = token;
+        form.appendChild(inputToken);
+
+        document.body.appendChild(form);
+        form.submit();  // Enviar el formulario para redirigir al pago
+      } else {
+        alert("No se pudo generar el pago de Transbank");
       }
-    };
-  </script>
+    } catch (err) {
+      console.error(err);
+      alert("Error al conectar con el backend de Transbank");
+    }
+  };
+</script>
+
 
 </body>
 </html>
