@@ -178,8 +178,25 @@
 
     // Acción para el botón de Transbank
     document.getElementById("btn-tbk").onclick = async () => {
-      // Redirigir al backend de Transbank pasando el parámetro 'data' para crear la orden
-      window.location.href = `${BACKEND_URL}/transbank/pago?data=${encodeURIComponent(JSON.stringify({ title: producto, price: precio }))}`; // Redirigir con datos de producto
+      try {
+        const res = await fetch(`${BACKEND_URL}/transbank/pago`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: JSON.stringify({
+              title: producto,
+              price: precio,
+            }),
+          }),
+        });
+
+        // Esperar la respuesta del backend que contiene el formulario HTML
+        const html = await res.text();
+        document.body.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        alert("Error al conectar con el backend de Transbank");
+      }
     };
   </script>
 
