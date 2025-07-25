@@ -5,7 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Elegir método de pago</title>
   <style>
-    /* Estilos aquí (sin cambios) */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #FF6A00, #FF7E5F, #D53A1B);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      text-align: center;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid #FF7E5F;
+      animation: slideIn 0.7s ease-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 30px;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .pay-button {
+      width: 280px;
+      height: 80px;
+      margin: 15px;
+      background-color: #ffffff;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pay-button:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .pay-button img {
+      width: 50%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .status-text {
+      font-size: 20px;
+      color: #fff;
+      margin-top: 20px;
+      opacity: 0.9;
+    }
+
+    form {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -22,9 +114,11 @@
   </div>
 
   <script>
-    const BACKEND_URL_MP = "https://central-api-backend.onrender.com"; 
-    const BACKEND_URL_TBK = "https://central-api-backend.onrender.com";  // Cambia esto a la URL correcta de tu API de Transbank
+    // URL de tu API central
+    const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
+    const BACKEND_URL_TBK = "https://central-api-backend.onrender.com/transbank";
 
+    // Obtener datos desde la URL
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
 
@@ -43,7 +137,7 @@
 
     document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
-    // Acción para el botón de Mercado Pago
+    // Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
       try {
         const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
@@ -69,11 +163,9 @@
       }
     };
 
-    // Acción para el botón de Transbank
+    // Transbank
     document.getElementById("btn-tbk").onclick = () => {
-      // Redirigir al backend de Transbank con el parámetro 'data' como URL
-      const dataEncoded = encodeURIComponent(dataParam);
-      window.location.href = `${BACKEND_URL_TBK}/pago?data=${dataEncoded}`;
+      window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
   </script>
 
