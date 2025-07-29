@@ -98,11 +98,19 @@
     form {
       display: none;
     }
+
+    #imagen-principal {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
+    <img id="imagen-principal" src="" alt="Imagen del producto">
     <h1>Escoge tu método de pago</h1>
     <p id="detalle">Cargando...</p>
     <button class="pay-button" id="btn-mp">
@@ -114,22 +122,37 @@
   </div>
 
   <script>
-    // URL de tu API central
     const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
     const BACKEND_URL_TBK = "https://central-api-backend.onrender.com/transbank";
 
-    // Obtener datos desde la URL
     const params = new URLSearchParams(window.location.search);
     const dataParam = params.get("data");
 
     let producto = "Producto genérico";
     let precio = 0;
+    let id_producto = null;
 
     if (dataParam) {
       try {
         const data = JSON.parse(decodeURIComponent(dataParam));
         producto = data.title || producto;
         precio = data.price || precio;
+        id_producto = data.external_reference || null;
+
+        // Mostrar imagen si existe en el catálogo
+        if (id_producto) {
+          fetch(`${BACKEND_URL_MP}/api/catalogo/${id_producto}`)
+            .then(res => res.json())
+            .then(catalogoData => {
+              if (catalogoData && catalogoData.imagen_principal_url) {
+                const img = document.getElementById("imagen-principal");
+                img.src = catalogoData.imagen_principal_url;
+                img.style.display = "block";
+              }
+            })
+            .catch(err => console.error("Error al obtener imagen:", err));
+        }
+
       } catch (e) {
         console.error("Error parseando data:", e);
       }
