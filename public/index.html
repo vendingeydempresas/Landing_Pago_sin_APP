@@ -99,23 +99,16 @@
       display: none;
     }
 
-    /* Imagen que mantiene transparencia y proporción */
-    #imagen-principal {
+    #carrusel-imagen {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: none;
       animation: sutilRebote 3s ease-in-out infinite;
     }
 
-    /* Animación sutil tipo rebote lento */
     @keyframes sutilRebote {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.03);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
     }
   </style>
 </head>
@@ -124,8 +117,8 @@
   <div class="container">
     <h1>Escoge tu método de pago</h1>
 
-    <!-- Imagen del producto -->
-    <div style="
+    <!-- Carrusel de imagen -->
+    <div id="carrusel-container" style="
       width: 250px;
       height: 250px;
       border-radius: 12px;
@@ -134,8 +127,9 @@
       justify-content: center;
       align-items: center;
       margin-bottom: 20px;
+      position: relative;
     ">
-      <img id="imagen-principal" src="" alt="Imagen del producto" />
+      <img id="carrusel-imagen" src="" alt="Imagen del producto" />
     </div>
 
     <p id="detalle">Cargando...</p>
@@ -165,6 +159,10 @@
         producto = data.title || producto;
         precio = data.price || precio;
         external_reference = data.external_reference;
+
+        if (external_reference) {
+          cargarImagenesCarrusel(external_reference);
+        }
       } catch (e) {
         console.error("Error parseando data:", e);
       }
@@ -172,23 +170,31 @@
 
     document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
 
-    // Mostrar imagen desde el catálogo
-    async function mostrarImagenProducto(id_producto) {
-      if (!id_producto) return;
+    async function cargarImagenesCarrusel(idProducto) {
       try {
-        const res = await fetch(`${BACKEND_URL_MP}/api/catalogo/${id_producto}`);
+        const res = await fetch(`${BACKEND_URL_MP}/api/catalogo/${idProducto}`);
         const data = await res.json();
-        if (data && data.imagen_principal_url) {
-          const img = document.getElementById("imagen-principal");
-          img.src = data.imagen_principal_url;
-          img.style.display = "block";
+        const imagenes = [];
+
+        if (data.imagen_principal_url) imagenes.push(data.imagen_principal_url);
+        if (Array.isArray(data.imagenes_adicionales_url)) {
+          imagenes.push(...data.imagenes_adicionales_url);
         }
+
+        if (imagenes.length === 0) return;
+
+        const imgElement = document.getElementById("carrusel-imagen");
+        let currentIndex = 0;
+        imgElement.src = imagenes[currentIndex];
+
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % imagenes.length;
+          imgElement.src = imagenes[currentIndex];
+        }, 3000);
       } catch (err) {
-        console.error("Error cargando imagen:", err);
+        console.error("Error cargando imágenes del catálogo:", err);
       }
     }
-
-    mostrarImagenProducto(external_reference);
 
     document.getElementById("btn-mp").onclick = async () => {
       try {
