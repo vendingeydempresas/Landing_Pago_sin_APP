@@ -100,14 +100,15 @@
     }
 
 #imagen-principal {
-  max-width: 50px; /* 👈 ajusta este valor según te guste */
-  width: 100%;
-  height: auto;
+  width: 250px;              /* ✅ Tamaño fijo en ancho */
+  height: 250px;             /* ✅ Tamaño fijo en alto */
+  object-fit: cover;         /* ✅ Rellena el espacio sin deformar */
   border-radius: 12px;
   margin-bottom: 20px;
   display: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
+
   </style>
 </head>
 <body>
