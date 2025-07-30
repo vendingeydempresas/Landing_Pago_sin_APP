@@ -13,9 +13,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-      animation: fadeIn 1.5s ease-out;
+      height: 100vh;
+      overflow: hidden;
+      animation: fadeIn 1.2s ease-out;
     }
 
     @keyframes fadeIn {
@@ -26,71 +26,73 @@
     .container {
       background: rgba(255, 255, 255, 0.15);
       text-align: center;
-      padding: 24px;
+      padding: 20px 16px;
       border-radius: 15px;
       width: 95%;
       max-width: 420px;
+      max-height: 95vh;
+      overflow-y: auto;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       backdrop-filter: blur(12px);
       border: 2px solid #FF7E5F;
-      animation: slideIn 0.7s ease-out;
+      animation: slideIn 0.6s ease-out;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     @keyframes slideIn {
-      from { transform: translateY(-50px); opacity: 0; }
+      from { transform: translateY(-40px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       text-transform: uppercase;
     }
 
     .subtitulo {
-      font-size: 15px;
+      font-size: 14px;
       color: #fff;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       font-weight: 300;
       opacity: 0.9;
     }
 
     .detalle-producto {
-      font-size: 18px;
+      font-size: 16px;
       color: #fff;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .expira {
-      font-size: 14px;
+      font-size: 13px;
       color: #ffe;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       opacity: 0.9;
     }
 
     .fallback {
-      font-size: 13px;
+      font-size: 12px;
       color: #fff;
-      margin-bottom: 25px;
+      margin-bottom: 16px;
       opacity: 0.7;
     }
 
     .confianza {
-      font-size: 13px;
+      font-size: 12px;
       color: #eee;
-      margin-top: 25px;
+      margin-top: 20px;
       opacity: 0.8;
     }
 
     .pay-button {
       width: 100%;
-      height: 65px;
+      height: 60px;
       background-color: #ffffff;
       border: none;
       cursor: pointer;
@@ -116,13 +118,12 @@
 
     #carrusel-imagen {
       width: 100%;
-      max-width: 250px;
-      height: auto;
+      max-height: 150px;
       object-fit: contain;
       animation: sutilRebote 3s ease-in-out infinite;
       transition: opacity 0.8s ease-in-out;
       border-radius: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     @keyframes sutilRebote {
@@ -144,17 +145,17 @@
     .instruccion {
       text-align: left;
       color: white;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
-      margin: 14px auto 6px;
+      margin: 12px auto 6px;
       max-width: 320px;
-      animation: bounce 1.5s infinite;
+      animation: bounce 1.4s infinite;
       display: inline-block;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(4px); }
+      50% { transform: translateY(5px); }
     }
   </style>
 </head>
