@@ -109,7 +109,7 @@
     }
 
     .pay-button img {
-      width: 60%;
+      width: 50%;
       height: auto;
       object-fit: contain;
     }
@@ -146,8 +146,15 @@
       color: white;
       font-size: 15px;
       font-weight: 500;
-      margin: 12px auto 6px;
+      margin: 14px auto 6px;
       max-width: 320px;
+      animation: bounce 1.5s infinite;
+      display: inline-block;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
     }
   </style>
 </head>
@@ -162,12 +169,12 @@
     <div class="detalle-producto" id="detalle">Cargando...</div>
     <div class="expira">⚠️ Enlace válido por: <span id="countdown">2:00</span></div>
 
-    <div class="instruccion">👉 Pincha aquí para pagar con <strong>Mercado Pago</strong></div>
+    <div class="instruccion">👇 Pincha aquí para pagar con <strong>Mercado Pago</strong></div>
     <button class="pay-button" id="btn-mp">
       <img src="mercado-pago-button.png" alt="Mercado Pago">
     </button>
 
-    <div class="instruccion">👉 Pincha aquí para pagar con <strong>tarjeta (crédito o débito)</strong></div>
+    <div class="instruccion">👇 Pincha aquí para pagar con <strong>tarjeta (crédito o débito)</strong></div>
     <button class="pay-button" id="btn-tbk">
       <img src="transbank-button.png" alt="Transbank">
     </button>
@@ -280,4 +287,3 @@
   </script>
 </body>
 </html>
-
