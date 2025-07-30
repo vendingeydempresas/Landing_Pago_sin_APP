@@ -46,6 +46,13 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
+    .bloque-botones {
+      max-width: 260px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
     h1 {
       font-size: 20px;
       font-weight: bold;
@@ -91,7 +98,7 @@
     }
 
     .pay-button {
-      width: 80%;
+      width: 100%;
       height: 60px;
       background-color: #ffffff;
       border: none;
@@ -103,7 +110,7 @@
       justify-content: center;
       align-items: center;
       padding: 0;
-      margin: 0 auto 16px auto; /* 👈 Centrado con margen inferior */
+      margin-bottom: 16px;
     }
 
     .pay-button:hover {
@@ -112,7 +119,7 @@
     }
 
     .pay-button img {
-      width: 30%;
+      width: 40%;
       height: auto;
       object-fit: contain;
     }
@@ -148,8 +155,7 @@
       color: white;
       font-size: 14px;
       font-weight: 500;
-      margin: 12px auto 6px;
-      max-width: 320px;
+      margin: 12px 0 6px 0;
       animation: bounce 1.4s infinite;
       display: inline-block;
     }
@@ -163,23 +169,25 @@
 <body>
 
   <div class="container">
-    <h1>Escoge tu método de pago</h1>
-    <div class="subtitulo">Selecciona cómo deseas pagar tu producto</div>
-
     <img id="carrusel-imagen" src="" alt="Imagen del producto" />
 
     <div class="detalle-producto" id="detalle">Cargando...</div>
     <div class="expira">⚠️ Enlace válido por: <span id="countdown">2:00</span></div>
 
-    <div class="instruccion">👇 Pincha aquí para pagar con <strong>Mercado Pago</strong></div>
-    <button class="pay-button" id="btn-mp">
-      <img src="mercado-pago-button.png" alt="Mercado Pago">
-    </button>
+    <div class="bloque-botones">
+      <h1>ESCOGE TU MÉTODO DE PAGO</h1>
+      <div class="subtitulo">Selecciona cómo deseas pagar tu producto</div>
 
-    <div class="instruccion">👇 Pincha aquí para pagar con <strong>tarjeta (crédito o débito)</strong></div>
-    <button class="pay-button" id="btn-tbk">
-      <img src="transbank-button.png" alt="Transbank">
-    </button>
+      <div class="instruccion">👇 Pincha aquí para pagar con <strong>Mercado Pago</strong></div>
+      <button class="pay-button" id="btn-mp">
+        <img src="mercado-pago-button.png" alt="Mercado Pago">
+      </button>
+
+      <div class="instruccion">👇 Pincha aquí para pagar con <strong>tarjeta (crédito o débito)</strong></div>
+      <button class="pay-button" id="btn-tbk">
+        <img src="transbank-button.png" alt="Transbank">
+      </button>
+    </div>
 
     <div class="fallback">¿Problemas? Recarga la página o escanea el QR nuevamente</div>
     <div class="confianza">🔒 Pago 100% seguro</div>
@@ -272,7 +280,6 @@
       window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
 
-    // Contador regresivo simple
     let time = 120;
     const countdown = document.getElementById("countdown");
     const timer = setInterval(() => {
