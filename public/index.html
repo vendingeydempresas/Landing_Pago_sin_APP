@@ -132,21 +132,24 @@
       object-fit: contain;
     }
 
-    .ficha-producto {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      gap: 10px;
-      width: 260px;
-      margin-left: auto;
-      margin-right: auto;
-      box-sizing: border-box;
-    }
+
+.ficha-producto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9); /* ajustado */
+  backdrop-filter: blur(3px);          /* nuevo */
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  gap: 10px;
+  width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
 
     .ficha-producto img {
       flex-shrink: 0;
