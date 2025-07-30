@@ -52,7 +52,7 @@
       font-size: 18px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 20px;
       text-transform: uppercase;
     }
 
@@ -246,7 +246,7 @@
 
     // Asignar al bloque de ficha
     document.getElementById("nombre-producto").innerText = producto;
-    document.getElementById("precio-producto").innerText = `$${precio}`;
+    document.getElementById("precio-producto").innerText = `$${Number(precio).toLocaleString("es-CL")}`;
 
     async function mostrarImagenesProducto(id_producto) {
       if (!id_producto) return;
