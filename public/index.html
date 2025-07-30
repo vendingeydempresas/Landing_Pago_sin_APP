@@ -217,108 +217,112 @@
     <div class="fallback">¿Problemas? Recarga la página o escanea el QR nuevamente</div>
   </div>
 
-  <script>
-    const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
-    const BACKEND_URL_TBK = "https://central-api-backend.onrender.com/transbank";
+<!-- ...todo igual hasta el final del body -->
+<script>
+  const BACKEND_URL_MP = "https://central-api-backend.onrender.com";
+  const BACKEND_URL_TBK = "https://central-api-backend.onrender.com/transbank";
 
-    const params = new URLSearchParams(window.location.search);
-    const dataParam = params.get("data");
+  const params = new URLSearchParams(window.location.search);
+  const dataParam = params.get("data");
 
-    let producto = "Producto genérico";
-    let precio = 0;
-    let external_reference = null;
+  let producto = "Producto genérico";
+  let precio = 0;
+  let external_reference = null;
+  let id_producto = null;
 
-    if (dataParam) {
-      try {
-        const data = JSON.parse(decodeURIComponent(dataParam));
-        producto = data.title || producto;
-        precio = data.price || precio;
-        external_reference = data.external_reference;
-      } catch (e) {
-        console.error("Error parseando data:", e);
-      }
+  if (dataParam) {
+    try {
+      const data = JSON.parse(decodeURIComponent(dataParam));
+      producto = data.title || producto;
+      precio = data.price || precio;
+      external_reference = data.external_reference;
+      id_producto = data.id_producto || null;
+    } catch (e) {
+      console.error("Error parseando data:", e);
     }
+  }
 
-    document.getElementById("nombre-producto").innerText = producto;
-    document.getElementById("precio-producto").innerText = `$${Number(precio).toLocaleString("es-CL")}`;
+  document.getElementById("nombre-producto").innerText = producto;
+  document.getElementById("precio-producto").innerText = `$${Number(precio).toLocaleString("es-CL")}`;
 
-    async function mostrarImagenesProducto(id_producto) {
-      if (!id_producto) return;
-      try {
-        const res = await fetch(`${BACKEND_URL_MP}/api/catalogo/${id_producto}`);
-        const data = await res.json();
-        if (!data) return;
+  async function mostrarImagenesProducto(id_producto) {
+    if (!id_producto) return;
+    try {
+      const res = await fetch(`${BACKEND_URL_MP}/api/catalogo/${id_producto}`);
+      const data = await res.json();
+      if (!data) return;
 
-        const imagenes = [];
-        if (data.imagen_principal_url) imagenes.push(data.imagen_principal_url);
-        if (Array.isArray(data.imagenes_adicionales_url)) {
-          imagenes.push(...data.imagenes_adicionales_url);
-        }
-
-        if (imagenes.length === 0) return;
-
-        const imgElement = document.getElementById("carrusel-imagen");
-        let currentIndex = 0;
-        imgElement.src = imagenes[currentIndex];
-
-        setInterval(() => {
-          imgElement.style.opacity = 0;
-          setTimeout(() => {
-            currentIndex = (currentIndex + 1) % imagenes.length;
-            imgElement.src = imagenes[currentIndex];
-            imgElement.style.opacity = 1;
-          }, 500);
-        }, 4000);
-      } catch (err) {
-        console.error("Error cargando imagen:", err);
+      const imagenes = [];
+      if (data.imagen_principal_url) imagenes.push(data.imagen_principal_url);
+      if (Array.isArray(data.imagenes_adicionales_url)) {
+        imagenes.push(...data.imagenes_adicionales_url);
       }
+
+      if (imagenes.length === 0) return;
+
+      const imgElement = document.getElementById("carrusel-imagen");
+      let currentIndex = 0;
+      imgElement.src = imagenes[currentIndex];
+
+      setInterval(() => {
+        imgElement.style.opacity = 0;
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % imagenes.length;
+          imgElement.src = imagenes[currentIndex];
+          imgElement.style.opacity = 1;
+        }, 500);
+      }, 4000);
+    } catch (err) {
+      console.error("Error cargando imagen:", err);
     }
+  }
 
-    mostrarImagenesProducto(external_reference);
+  // ✅ usa id_producto en vez del external_reference
+  mostrarImagenesProducto(id_producto);
 
-    document.getElementById("btn-mp").onclick = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: producto,
-            quantity: 1,
-            price: precio,
-            description: "Compra desde landing",
-            external_reference: "qr_" + Date.now(),
-          }),
-        });
-        const data = await res.json();
-        if (data.init_point) {
-          window.location.href = data.init_point;
-        } else {
-          alert("No se pudo generar el link de Mercado Pago");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Error al conectar con el backend");
+  document.getElementById("btn-mp").onclick = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: producto,
+          quantity: 1,
+          price: precio,
+          description: "Compra desde landing",
+          external_reference: external_reference, // ✅ usamos el valor real
+        }),
+      });
+      const data = await res.json();
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        alert("No se pudo generar el link de Mercado Pago");
       }
-    };
+    } catch (err) {
+      console.error(err);
+      alert("Error al conectar con el backend");
+    }
+  };
 
-    document.getElementById("btn-tbk").onclick = () => {
-      window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
-    };
+  document.getElementById("btn-tbk").onclick = () => {
+    window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
+  };
 
-    let time = 120;
-    const countdown = document.getElementById("countdown");
-    const timer = setInterval(() => {
-      if (time <= 0) {
-        countdown.innerText = "expirado";
-        clearInterval(timer);
-        return;
-      }
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      countdown.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-      time--;
-    }, 1000);
-  </script>
+  let time = 120;
+  const countdown = document.getElementById("countdown");
+  const timer = setInterval(() => {
+    if (time <= 0) {
+      countdown.innerText = "expirado";
+      clearInterval(timer);
+      return;
+    }
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    countdown.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    time--;
+  }, 1000);
+</script>
 </body>
 </html>
 
