@@ -26,7 +26,7 @@
     .container {
       background: rgba(255, 255, 255, 0.2);
       text-align: center;
-      padding: 30px;
+      padding: 30px 25px;
       border-radius: 15px;
       max-width: 500px;
       width: 100%;
@@ -46,26 +46,55 @@
     }
 
     h1 {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    p {
-      font-size: 18px;
+    .subtitulo {
+      font-size: 16px;
       color: #fff;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       font-weight: 300;
       opacity: 0.9;
+    }
+
+    .indicador-pasos {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .detalle-producto {
+      font-size: 20px;
+      color: #fff;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .expira {
+      font-size: 14px;
+      color: #ffe;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .confianza {
+      font-size: 13px;
+      color: #eee;
+      margin-top: 10px;
+      opacity: 0.8;
     }
 
     .pay-button {
       width: 280px;
       height: 80px;
-      margin: 15px;
+      margin: 15px 0;
       background-color: #ffffff;
       border: none;
       cursor: pointer;
@@ -88,18 +117,10 @@
       object-fit: contain;
     }
 
-    .status-text {
-      font-size: 20px;
-      color: #fff;
-      margin-top: 20px;
-      opacity: 0.9;
-    }
-
     form {
       display: none;
     }
 
-    /* Imagen principal y carrusel */
     #carrusel-imagen {
       width: 100%;
       height: 100%;
@@ -122,9 +143,10 @@
 <body>
 
   <div class="container">
+    <div class="indicador-pasos">Paso 2 de 2</div>
     <h1>Escoge tu método de pago</h1>
+    <div class="subtitulo">Escaneaste correctamente el código. Ahora selecciona cómo deseas pagar.</div>
 
-    <!-- Imagen carrusel -->
     <div style="
       width: 250px;
       height: 250px;
@@ -138,7 +160,8 @@
       <img id="carrusel-imagen" src="" alt="Imagen del producto" />
     </div>
 
-    <p id="detalle">Cargando...</p>
+    <div class="detalle-producto" id="detalle">Cargando...</div>
+    <div class="expira">⚠️ Este enlace expirará en pocos minutos</div>
 
     <button class="pay-button" id="btn-mp">
       <img src="mercado-pago-button.png" alt="Mercado Pago">
@@ -146,6 +169,8 @@
     <button class="pay-button" id="btn-tbk">
       <img src="transbank-button.png" alt="Transbank">
     </button>
+
+    <div class="confianza">🔒 Pago 100% seguro</div>
   </div>
 
   <script>
@@ -170,16 +195,14 @@
       }
     }
 
-    document.getElementById("detalle").innerText = `Producto: ${producto} - $${precio}`;
+    document.getElementById("detalle").innerText = `🛍️ ${producto} - $${precio}`;
 
-    // Mostrar imagen desde el catálogo
     async function mostrarImagenesProducto(id_producto) {
       if (!id_producto) return;
 
       try {
         const res = await fetch(`${BACKEND_URL_MP}/api/catalogo/${id_producto}`);
         const data = await res.json();
-
         if (!data) return;
 
         const imagenes = [];
@@ -202,7 +225,7 @@
             imgElement.src = imagenes[currentIndex];
             imgElement.style.opacity = 1;
           }, 500);
-        }, 4000); // cambia cada 4 segundos
+        }, 4000);
       } catch (err) {
         console.error("Error cargando imagen:", err);
       }
@@ -210,7 +233,6 @@
 
     mostrarImagenesProducto(external_reference);
 
-    // Mercado Pago
     document.getElementById("btn-mp").onclick = async () => {
       try {
         const res = await fetch(`${BACKEND_URL_MP}/api/create-mp-link`, {
@@ -236,11 +258,9 @@
       }
     };
 
-    // Transbank
     document.getElementById("btn-tbk").onclick = () => {
       window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
   </script>
-
 </body>
 </html>
