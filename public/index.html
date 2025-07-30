@@ -26,7 +26,7 @@
     .container {
       background: rgba(255, 255, 255, 0.15);
       text-align: center;
-      padding: 20px;
+      padding: 24px;
       border-radius: 15px;
       width: 95%;
       max-width: 420px;
@@ -48,53 +48,51 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .subtitulo {
       font-size: 15px;
       color: #fff;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       font-weight: 300;
       opacity: 0.9;
-    }
-
-    .indicador-pasos {
-      font-size: 13px;
-      color: #fff;
-      margin-bottom: 10px;
-      opacity: 0.75;
     }
 
     .detalle-producto {
       font-size: 18px;
       color: #fff;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .expira {
+      font-size: 14px;
+      color: #ffe;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .fallback {
       font-size: 13px;
       color: #fff;
-      margin-top: -10px;
-      margin-bottom: 20px;
-      opacity: 0.85;
+      margin-bottom: 25px;
+      opacity: 0.7;
     }
 
     .confianza {
-      font-size: 12px;
+      font-size: 13px;
       color: #eee;
-      margin-top: 10px;
+      margin-top: 25px;
       opacity: 0.8;
     }
 
     .pay-button {
       width: 100%;
-      max-width: 300px;
+      max-width: 320px;
       height: 65px;
-      margin: 10px 0;
+      margin: 12px 0;
       background-color: #ffffff;
       border: none;
       cursor: pointer;
@@ -104,6 +102,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      gap: 10px;
     }
 
     .pay-button:hover {
@@ -112,9 +111,15 @@
     }
 
     .pay-button img {
-      width: 70%;
-      max-height: 45px;
+      width: 26px;
+      height: auto;
       object-fit: contain;
+    }
+
+    .pay-button span {
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
     }
 
     #carrusel-imagen {
@@ -136,28 +141,37 @@
     form {
       display: none;
     }
+
+    #countdown {
+      font-size: 13px;
+      color: #fff;
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="indicador-pasos">Paso 2 de 2</div>
     <h1>Escoge tu método de pago</h1>
-    <div class="subtitulo">Escaneaste correctamente el código. Ahora elige cómo deseas pagar.</div>
+    <div class="subtitulo">Selecciona cómo deseas pagar tu producto</div>
 
     <img id="carrusel-imagen" src="" alt="Imagen del producto" />
 
     <div class="detalle-producto" id="detalle">Cargando...</div>
-    <div class="expira">⚠️ Este enlace expirará pronto</div>
+    <div class="expira">⚠️ Enlace válido por: <span id="countdown">2:00</span></div>
 
     <button class="pay-button" id="btn-mp">
-      <img src="mercado-pago-button.png" alt="Pagar con Mercado Pago">
+      <img src="mercado-pago-button.png" alt="Mercado Pago">
+      <span>Pagar con Mercado Pago</span>
     </button>
 
     <button class="pay-button" id="btn-tbk">
-      <img src="transbank-button.png" alt="Pagar con Transbank">
+      <img src="transbank-button.png" alt="Transbank">
+      <span>Pagar con Transbank</span>
     </button>
 
+    <div class="fallback">¿Problemas? Recarga la página o escanea el QR nuevamente</div>
     <div class="confianza">🔒 Pago 100% seguro</div>
   </div>
 
@@ -247,7 +261,21 @@
     document.getElementById("btn-tbk").onclick = () => {
       window.location.href = `${BACKEND_URL_TBK}/pago?data=${encodeURIComponent(dataParam)}`;
     };
-  </script>
 
+    // Contador regresivo simple
+    let time = 120;
+    const countdown = document.getElementById("countdown");
+    const timer = setInterval(() => {
+      if (time <= 0) {
+        countdown.innerText = "expirado";
+        clearInterval(timer);
+        return;
+      }
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      countdown.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      time--;
+    }, 1000);
+  </script>
 </body>
 </html>
