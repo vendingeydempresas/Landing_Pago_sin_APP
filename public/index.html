@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elegir método de pago</title>
   <style>
-    /* 🔧 ESTILOS BASE Y LAYOUT GENERAL */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -47,7 +46,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* 🔧 TIPOGRAFÍA Y TEXTOS */
     h1 {
       font-size: 18px;
       font-weight: bold;
@@ -56,12 +54,12 @@
       text-transform: uppercase;
     }
 
-    .subtitulo {
-      font-size: 14px;
+    .titulo-pago {
+      font-size: 16px;
       color: #fff;
-      margin-bottom: 14px;
-      font-weight: 300;
-      opacity: 0.9;
+      margin: 8px 0 10px;
+      font-weight: 600;
+      text-transform: uppercase;
     }
 
     .expira {
@@ -93,13 +91,6 @@
       opacity: 0.7;
     }
 
-    .confianza {
-      font-size: 12px;
-      color: #eee;
-      margin-top: 20px;
-      opacity: 0.8;
-    }
-
     #countdown {
       font-size: 13px;
       color: #fff;
@@ -107,7 +98,6 @@
       opacity: 0.9;
     }
 
-    /* 🔧 BOTONES DE PAGO */
     .bloque-botones {
       max-width: 260px;
       width: 100%;
@@ -127,6 +117,7 @@
       justify-content: center;
       align-items: center;
       padding: 0;
+      margin-top: 10px;
       margin-bottom: 16px;
     }
 
@@ -141,31 +132,29 @@
       object-fit: contain;
     }
 
-    /* 🔧 NUEVA FICHA DE PRODUCTO (DETALLE + IMAGEN) */
-.ficha-producto {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  gap: 10px;
-  width: 260px; /* 👈 ANCHO FIJO */
-  margin-left: auto;
-  margin-right: auto;
-  box-sizing: border-box;
-}
+    .ficha-producto {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      gap: 10px;
+      width: 260px;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
 
-.ficha-producto img {
-  flex-shrink: 0;              /* 👈 No permite que la imagen expanda el contenedor */
-  width: 70px;                 /* 👈 Tamaño fijo */
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-}
-
+    .ficha-producto img {
+      flex-shrink: 0;
+      width: 70px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+    }
 
     .producto-info {
       text-align: left;
@@ -177,7 +166,6 @@
       margin-bottom: 6px;
     }
 
-    /* 🔧 ANIMACIÓN DE IMAGEN */
     #carrusel-imagen {
       animation: sutilRebote 3s ease-in-out infinite;
       transition: opacity 0.8s ease-in-out;
@@ -193,9 +181,9 @@
 </head>
 <body>
   <div class="container">
-    <h1>ESCOGE TU MÉTODO DE PAGO</h1>
+    <h1>ESTÁS COMPRANDO:</h1>
 
-    <!-- 🧊 Bloque horizontal: detalle + imagen -->
+    <!-- 🧊 Detalle de producto -->
     <div class="ficha-producto">
       <div class="producto-info" id="detalle">
         <div><strong>Producto:</strong> <span id="nombre-producto">Cargando...</span></div>
@@ -204,7 +192,9 @@
       <img id="carrusel-imagen" src="" alt="Imagen del producto" />
     </div>
 
-    <!-- 💳 Sección de botones de pago -->
+    <h2 class="titulo-pago">ESCOGE TU MÉTODO DE PAGO</h2>
+
+    <!-- 💳 Botones -->
     <div class="bloque-botones">
       <div class="instruccion"> Para pagar con <strong>Mercado Pago</strong> 👇</div>
       <button class="pay-button" id="btn-mp">
@@ -217,7 +207,7 @@
       </button>
     </div>
 
-    <!-- ❗ Mensajes de ayuda -->
+    <!-- ⚠️ Expiración -->
     <div class="expira">⚠️ Enlace válido por: <span id="countdown">2:00</span></div>
     <div class="fallback">¿Problemas? Recarga la página o escanea el QR nuevamente</div>
   </div>
@@ -244,7 +234,6 @@
       }
     }
 
-    // Asignar al bloque de ficha
     document.getElementById("nombre-producto").innerText = producto;
     document.getElementById("precio-producto").innerText = `$${Number(precio).toLocaleString("es-CL")}`;
 
@@ -327,3 +316,4 @@
   </script>
 </body>
 </html>
+
